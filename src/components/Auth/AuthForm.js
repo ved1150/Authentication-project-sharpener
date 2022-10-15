@@ -1,8 +1,10 @@
-import { useState, useRef } from "react";
-
+import { useState, useRef ,useContext } from "react";
+import GlobalContext from "../../context/globalContext";
 import classes from "./AuthForm.module.css";
 
 const AuthForm = () => {
+  let a  = useContext(GlobalContext )
+
   const emailInput = useRef();
   const passwordInput = useRef();
   const [isLoading, setIsLoading] = useState(false);
@@ -16,7 +18,6 @@ const AuthForm = () => {
     event.preventDefault();
     const enteredEmail = emailInput.current.value;
     const enteredPassword = passwordInput.current.value;
-    console.log(enteredEmail, enteredPassword);
     if (isLogin) {
       setIsLoading(true)
       fetch(
@@ -34,7 +35,7 @@ const AuthForm = () => {
         }
       ).then((res) => {
         if (res.ok) {
-          res.json().then((data) =>console.log(data.idToken));
+          res.json().then((data) =>a.login(data.idToken));
         } else {
           res.json().then((data) =>alert(data.error.message));
         }
@@ -81,7 +82,7 @@ const AuthForm = () => {
         <div className={classes.actions}>
           {isLoading && <p>Sending request...</p>}
           {!isLoading && (
-            <button>{isLogin ? "Login" : "Create Account"}</button>
+            <button >{isLogin ? "Login" : "Create Account"}</button>
           )}
           <button
             type="button"
