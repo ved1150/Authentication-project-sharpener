@@ -6,6 +6,8 @@ import classes from "./MainNavigation.module.css";
 const MainNavigation = () => {
   let a = useContext(globalContext);
 
+  let getToken = JSON.parse(localStorage.getItem("token"));
+  console.log(getToken);
   return (
     <header className={classes.header}>
       <Link to="/">
@@ -13,10 +15,10 @@ const MainNavigation = () => {
       </Link>
       <nav>
         <ul>
-          <li>{<Link to="/auth">Login</Link>}</li>
-          <li>{a.tokenIsAvilable && <Link to="/profile">Profile</Link>}</li>
+          <li>{!getToken && <Link to="/auth">Login</Link>}</li>
+          <li>{getToken && <Link to="/profile">Profile</Link>}</li>
           <li>
-            {a.tokenIsAvilable && (
+            {getToken && (
               <Link to="/auth">
                 {" "}
                 <button onClick={() => a.logout()}>Logout</button>

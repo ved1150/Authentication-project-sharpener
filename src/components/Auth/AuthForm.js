@@ -1,9 +1,11 @@
-import { useState, useRef ,useContext } from "react";
+import { useState, useRef, useContext } from "react";
 import GlobalContext from "../../context/globalContext";
 import classes from "./AuthForm.module.css";
+import { useHistory } from "react-router-dom";
 
 const AuthForm = () => {
-  let a  = useContext(GlobalContext )
+  const history = useHistory();
+  let a = useContext(GlobalContext);
 
   const emailInput = useRef();
   const passwordInput = useRef();
@@ -19,7 +21,7 @@ const AuthForm = () => {
     const enteredEmail = emailInput.current.value;
     const enteredPassword = passwordInput.current.value;
     if (isLogin) {
-      setIsLoading(true)
+      setIsLoading(true);
       fetch(
         "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBLcVbcEHp0WzTOEGbgtx9la83ZXePamRo",
         {
@@ -35,11 +37,15 @@ const AuthForm = () => {
         }
       ).then((res) => {
         if (res.ok) {
-          res.json().then((data) =>a.login(data.idToken));
+          res.json().then((data) => {
+            a.login(data.idToken);
+            localStorage.setItem("token", JSON.stringify(data.idToken));
+          });
+          history.replace("./");
         } else {
-          res.json().then((data) =>alert(data.error.message));
+          res.json().then((data) => alert(data.error.message));
         }
-        setIsLoading(false)
+        setIsLoading(false);
       });
     } else {
       setIsLoading(true);
@@ -82,7 +88,7 @@ const AuthForm = () => {
         <div className={classes.actions}>
           {isLoading && <p>Sending request...</p>}
           {!isLoading && (
-            <button >{isLogin ? "Login" : "Create Account"}</button>
+            <button>{isLogin ? "Login" : "Create Account"}</button>
           )}
           <button
             type="button"
